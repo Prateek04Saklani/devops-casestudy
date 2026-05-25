@@ -1,6 +1,6 @@
 # DevOps Case Study — CSV Processor Application
 
-A production-grade DevOps project demonstrating a full deployment pipeline for a Python Flask web application that processes CSV files and uploads them to AWS S3.
+A DevOps project demonstrating a full deployment for a Python Flask web application that processes CSV files and uploads them to AWS S3.
 
 ## Stack
 
