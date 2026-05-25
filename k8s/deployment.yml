@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:                                                                                                                       
+  name: csv-app                                                                                                                  
+  namespace: default                                                                                                             
+spec:                                                                                                                            
+  replicas: 2                                                                                                                    
+  selector:                            
+    matchLabels:
+      app: csv-app
+  template:
+    metadata:
+      labels:
+        app: csv-app
+    spec:
+      containers:
+        - name: app
+          image: prateeksaklani/csv-app:latest         
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: shared-static
+              mountPath: /shared/static/
+
+          env:                          
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: csv-app-secret
+                  key: S3_BUCKET
+            - name: AWS_REGION
+              value: "ap-south-1"
+            - name: S3_PREFIX
+              value: "processed/"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: csv-app-secret
+                  key: SECRET_KEY
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: csv-app-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: csv-app-secret
+                  key: AWS_SECRET_ACCESS_KEY
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: shared-static
+              mountPath: /shared/static/
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 10
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+
+          
+
+      volumes:
+        - name: shared-static
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: nginx-config

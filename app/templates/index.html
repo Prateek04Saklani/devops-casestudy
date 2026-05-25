@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSV Processor</title>
+</head>
+<body>
+  <h1>CSV Processor</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <p style="color: {{ 'red' if category == 'error' else 'green' }}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <h2>Upload CSV</h2>
+  <form method="post" action="/upload" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".csv">
+    <button type="submit">Upload & Process</button>
+  </form>
+
+  {% if not s3_configured %}
+    <p><strong>Warning:</strong> S3_BUCKET not configured. Files will not be saved to S3.</p>
+  {% endif %}
+
+  <h2>Previously Processed Files</h2>
+  {% if files %}
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Size (KB)</th>
+          <th>Uploaded</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for f in files %}
+        <tr>
+          <td>{{ f.name }}</td>
+          <td>{{ f.size_kb }}</td>
+          <td>{{ f.last_modified }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No files processed yet.</p>
+  {% endif %}
+
+</body>
+</html>

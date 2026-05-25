@@ -1,0 +1,5 @@
+flask
+werkzeug
+boto3
+gunicorn
+python-dotenv

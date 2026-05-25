@@ -1,0 +1,32 @@
+replicaCount: 2
+
+image:
+  repository: prateeksaklani/csv-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+resources:
+  app:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  nginx:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+s3:
+  bucket: prateek-documents
+  prefix: processed/
+  region: ap-south-1
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 5
+  cpuUtilization: 70

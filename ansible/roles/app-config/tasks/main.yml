@@ -1,0 +1,65 @@
+---                                         
+- name: Ensure app group exists                       
+  group:                                    
+    name: "{{ app_group }}"                           
+    system: yes                                                                                                                  
+          
+- name: Ensure app user exists                                                                                                   
+  user:                                                                                                                          
+    name: "{{ app_user }}"                                                                                                       
+    group: "{{ app_group }}"           
+    system: yes
+    create_home: no
+
+- name: Install system dependencies
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - nginx
+    state: present
+    update_cache: yes
+
+- name: Create app directory
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0755"
+
+- name: Copy requirements file
+  copy:
+    src: requirements.txt
+    dest: "{{ app_dir }}/requirements.txt"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0644"
+
+- name: Install Python dependencies
+  pip:
+    requirements: "{{ app_dir }}/requirements.txt"
+    state: present
+
+- name: Deploy app environment config
+  template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0600"
+
+- name: Deploy nginx config
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart nginx
+
+- name: Ensure nginx is running
+  service:
+    name: nginx
+    state: started
+    enabled: yes

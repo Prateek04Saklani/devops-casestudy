@@ -1,0 +1,24 @@
+# Environment
+.env
+.env.*
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# K8s secrets
+k8s/secret.yaml
+k8s/secret.yml
+
+# OS
+.DS_Store
+*.swp
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Results</title>
+</head>
+<body>
+  <h1>Parsed Results</h1>
+  <p>{{ row_count }} rows parsed.</p>
+
+  {% if s3_ok %}
+    <p style="color: green">Uploaded to S3: {{ s3_msg }}</p>
+  {% else %}
+    <p style="color: red">S3 upload failed: {{ s3_msg }}</p>
+  {% endif %}
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>SKU ID</th>
+        <th>Product Name</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.row_num }}</td>
+        <td>{{ row.sku_id }}</td>
+        <td>{{ row.product_name }}</td>
+        <td>{{ row.price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br>
+  <a href="/">← Back to Upload</a>
+
+</body>
+</html>

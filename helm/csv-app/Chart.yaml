@@ -1,0 +1,6 @@
+apiVersion: v2
+name: csv-app
+description: Flask CSV processor with nginx sidecar
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

@@ -1,0 +1,20 @@
+services:                                   
+    app:                                                
+      build: ./app                                                                                            
+      volumes:                     
+        - static_files:/shared/static                                                                         
+      env_file:                                                                                               
+        - .env                                                                                                
+                                                                                                              
+    nginx:
+      image: nginx:alpine
+      ports:
+        - "8080:80"
+      volumes:
+        - ./app/nginx.conf:/etc/nginx/nginx.conf:ro
+        - static_files:/shared/static:ro
+      depends_on:
+        - app
+
+volumes:
+  static_files:

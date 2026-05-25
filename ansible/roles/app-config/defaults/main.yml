@@ -1,0 +1,9 @@
+---
+app_user: appuser
+app_group: appgroup
+app_dir: /app
+app_port: 5000
+s3_bucket: ""
+s3_prefix: "processed/"
+aws_region: "ap-south-1"
+secret_key: "change-in-production"

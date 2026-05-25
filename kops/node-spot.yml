@@ -1,0 +1,24 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup                                                                                                              
+metadata:                                                                                                                        
+  name: nodes-spot                                                                                                               
+  labels:                              
+    kops.k8s.io/cluster: csv-app.k8s.local
+spec:
+  role: Node
+  instanceType: t3.medium
+  maxPrice: "0.05"
+  minSize: 0
+  maxSize: 10
+  subnets:
+    - ap-south-1a
+    - ap-south-1b
+    - ap-south-1c
+  mixedInstancesPolicy:
+    instances:
+      - t3.medium
+      - t3.large
+      - t2.medium
+  cloudLabels:
+    k8s.io/cluster-autoscaler/enabled: "true"
+    k8s.io/cluster-autoscaler/csv-app.k8s.local: "owned"

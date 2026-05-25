@@ -1,0 +1,11 @@
+---
+- name: Configure CSV app servers
+  hosts: app_servers
+  become: yes
+  vars:
+    s3_bucket: "{{ lookup('env', 'S3_BUCKET') }}"
+    aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+    aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+    secret_key: "{{ lookup('env', 'SECRET_KEY') }}"
+  roles:
+    - app-config
